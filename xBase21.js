@@ -183,7 +183,7 @@ function initBella(){
     document.getElementById("home").style.zIndex = "191";
     document.getElementById("playText").style.zIndex = "192";
     document.getElementById("BLleftOver02").style.zIndex = "50"; 
-    document.getElementById("BLleftOver02").nativeElement.src = gFolderBase +"BLACKleftOVERS/02.png";
+  //  document.getElementById("BLleftOver02").nativeElement.src = gFolderBase +"BLACKleftOVERS/02.png";
  
 }  //----------------------end initBella
 
