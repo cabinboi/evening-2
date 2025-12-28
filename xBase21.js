@@ -82,8 +82,8 @@ function playButt(){
     gMainElementsMatrix.forEach(item => gFile.setElProps(item[0], item[3]));    ////////  RESET ALL ELEMENTS TO ORIG LOCS, OPACS, transY, zIndex -- SRC FILES not held yet              
     gOpenedUp = 0;       /// can we see main Bella yet?
     gDoingOpen = 0;
-    document.getElementById("BLleftOver02").style.opacity = "1";
-    document.getElementById("BLleftOver02").style.zIndex = "50"; 
+  //  document.getElementById("BLleftOver02").style.opacity = "1";
+   // document.getElementById("BLleftOver02").style.zIndex = "50"; 
     document.getElementById("BELLA_NEW").style.opacity =  "0.1"; 
     
     
