@@ -70,7 +70,7 @@ getElProps(element, propNamesArr){          ///  top, left, width, height, opac
   
   
   
-  ////    can we deprecate these?
+  ////    can i deprecate these?
    setTop (element, pixincs){  
         var el = document.getElementById(element);
         var elStyle = window.getComputedStyle(el);

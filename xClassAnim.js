@@ -89,7 +89,7 @@ class Animator {
         break;
                  
         
-      case "ranSwap":                              ///***********************************************************************
+      case "ranSwap":                              
           this.ranCounter = Math.floor(Math.random() * this.elementArr.length);                          
           var randomImg = gFile.getRandomFile(gFolderBase + this.elementArr[this.ranCounter][1],  this.elementArr[this.ranCounter][2], gFilePrefix, gImageExtension)  ;  
           gFile.swapImage(this.elementArr[this.ranCounter][0], randomImg);  
@@ -321,13 +321,12 @@ class Animator {
           var numMoves = 20;
           pixInc = -7;    //20;               
           mover = new Animator([thisObj.breakBackArr], numMoves, pixInc, "width"); 
-          gBeatEngine.animArray.push(mover); 
-        
+          gBeatEngine.animArray.push(mover);         
           pixInc = -10;    //20;                
           mover = new Animator([thisObj.breakBackArr], numMoves, pixInc, "height", 0, 0, [thisObj.breakBackCB, thisObj.breakBackArr[0],  thisObj.breakBackArr[3] ]); 
-          gBeatEngine.animArray.push(mover);                                                  //  adding a CB ^ to get back to exact old props after breakback        
+          gBeatEngine.animArray.push(mover);                                                  //  adding a CB ^ to get back to exact old props after breakback                          
         
-        if(gOpenedUp){ }  else {      ////  make staatic randoms      ////////***********************************************************
+        if(gOpenedUp){ }  else {      ////  make glitch randoms      ////////***********************************************************
             mover = new Animator([["BLleftOver02",  "BLACKleftOVERS/", 5]], 12, 0, "ranSwap"); 
             gBeatEngine.animArray.push(mover);
           }        
@@ -338,35 +337,33 @@ class Animator {
     
     ///   finish the open sequence  ///  get all this back to xBase eventually   ****************************************************************
     if(gDoingOpen){
-      ////    make left anim squares littler        
-      var numMoves = 15;
-      var pixInc = -12;    //20;  
-      thisObj.brokeoutElsArr.forEach(item => {                       
-          var mover = new Animator([item], numMoves, pixInc, "width"); 
-          gBeatEngine.animArray.push(mover);         
-      });
-      
-        //  pixInc = -10;    //20;                
-        //  mover = new Animator([thisObj.breakBackArr], numMoves, pixInc, "height", 0, 0, [thisObj.breakBackCB, thisObj.breakBackArr[0],  thisObj.breakBackArr[3] ]); 
-         /// gBeatEngine.animArray.push(mover);
-      ///  end littler
+      ////    make left anim squares littler             
+      thisObj.brokeoutElsArr.forEach(item => {                        
+          var mover = new Animator([item], 15, -12, "width"); 
+          gBeatEngine.animArray.push(mover);   
+        
+          var elStyle = window.getComputedStyle(document.getElementById(item[0]));                                                                  
+        
+          if(Number(elStyle.getPropertyValue("left").replace("px", "")) > 150){   
+           // console.log("in doing open thing.left: inside" );
+            var mover = new Animator([item], 20, 10, "left"); 
+            gBeatEngine.animArray.push(mover); 
+          }
+      }); ///  end littler                  
       
       document.getElementById("BLleftOver02").style.opacity = "0";
       document.getElementById("BELLA_NEW").style.opacity =  "1"; 
       gDoingOpen = 0;
       gOpenedUp = 1;
-    }    ///   end open sequence
-    
-               
+    }    ///   end open sequence                   
 
- //   var coverCheck = Number(window.getComputedStyle(document.getElementById("BLleftOver02")).opacity);   ////*************************************************************
- //   console.log("coverCheck:  " + coverCheck);
+
     var checkLeft = gFile.getLoc(currElementArr[0], "left");
     var rot = 0;
     var moveFade = 0;  
     if(checkLeft<500) { moveFade = 1;  
                       } else {
-      if(gFile.getRandomNum(200)<10){  if(gOpenedUp){rot = 1;} }    ////************************************************************* was coverCheck, gOpenedUp working
+      if(gFile.getRandomNum(200)<10){  if(gOpenedUp){rot = 1;} }    
       if(gFile.getRandomNum(50)<10){ moveFade = 1;  }
     }
     
@@ -383,10 +380,8 @@ class Animator {
          var pixInc = 2;  
          var directArr = ["left", "right", "up", "down"];
          var ranCounter = Math.floor(Math.random() * directArr.length);      
-         var direction = directArr[ranCounter];       
-      //   console.log("call fr ranCB 8");
-         let mover = new Animator([currElementArr], 4, pixInc, direction); 
-         gBeatEngine.animArray.push(mover);              
+         var direction = directArr[ranCounter];              
+         gBeatEngine.animArray.push(new Animator([currElementArr], 4, pixInc, direction));              
         
           var fadeInc = 0.1;    
       //   console.log("call fr ranCB 9");
@@ -397,8 +392,7 @@ class Animator {
     ////  SHUFFLEz
     if(gFile.getRandomNum(50)<20){
       if(thisObj.brokeoutElsArr.length>1){ thisObj.brokeoutElsArr.forEach(item => document.getElementById(item[0]).style.zIndex = String(gFile.getRandomNum(50) + 50) );   }
-    }
-    
+    }    
     thisObj.waitingToPlay = 0;         
     
   }               ////  end ranImageAudCB
