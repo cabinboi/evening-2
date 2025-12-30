@@ -106,7 +106,7 @@ class Beatengine {
                     if(this.playingLoop){}     else {
                       this.loopAud = new Audio(gFolderBase + "AUDIO/shuffle_loop.ogg" );
                      // console.log("this.playingLoop     " + this.playingLoop );                 
-                      this.loopAud.volume= .1;
+                      this.loopAud.volume= .2;
                        this.loopAud.loop=true;
                       this.loopAud.play();
                       this.playingLoop = 1;
@@ -198,7 +198,7 @@ class Beatengine {
                   if (this.playSound){                                                /////////// SET UP THE SOUND                                                          
                     this.audArray[this.audCounter].src = this.playSound;
                     this.audArray[this.audCounter].currentTime = 0;
-                    this.audArray[this.audCounter].volume= gVolume * .9;
+                    this.audArray[this.audCounter].volume= gVolume * .8;
                     this.currentAud = this.audArray[this.audCounter];  
                     this.currentAud.play();    
              //    console.log("BE this.audArray[this.audCounter].src= "  + this.audArray[this.audCounter].src);
