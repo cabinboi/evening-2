@@ -300,7 +300,7 @@ class Animator {
           ////  end make big
           
           if(gOpenedUp){ }  else {      ////  make staatic randoms      ////////***********************************************************
-            mover = new Animator([["BLleftOver02",  "BLACKleftOVERS/", 5]], 12, 0, "ranSwap"); 
+            mover = new Animator([["BLleftOver02",  "BLACKleftOVERS/", 18]], 12, 0, "ranSwap"); 
             gBeatEngine.animArray.push(mover);
           }
           
@@ -327,7 +327,7 @@ class Animator {
           gBeatEngine.animArray.push(mover);                                                  //  adding a CB ^ to get back to exact old props after breakback                          
         
         if(gOpenedUp){ }  else {      ////  make glitch randoms      ////////***********************************************************
-            mover = new Animator([["BLleftOver02",  "BLACKleftOVERS/", 5]], 12, 0, "ranSwap"); 
+            mover = new Animator([["BLleftOver02",  "BLACKleftOVERS/", 18]], 12, 0, "ranSwap"); 
             gBeatEngine.animArray.push(mover);
           }        
         
