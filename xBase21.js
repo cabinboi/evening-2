@@ -18,8 +18,13 @@ var gMainElementsMatrix = 0;
 var gOpenedUp = 0;       /// can we see main Bella yet?
 var gDoingOpen = 0;
 
+function tester(...args) {
+  args.forEach(item => console.log(item));
+}
 
-function initialise(){          
+
+function initialise(){       
+//  tester(6, "hello", [0,1]);
   resetBeatEngine();      ////  still needed here?
   
   gFolderBase = "assets/";     
@@ -44,6 +49,8 @@ function initialise(){
   gBeatEngine.beatTimeout = setTimeout(BeatEngineRollIt, gBeatEngine.millsecTimer);       
   
   gMainElementsMatrix = initBella();
+  //gBeatEngine.tempo = 120;
+  //console.log("in base tempo  " + gBeatEngine.tempo);
   
  
 }   //CALLED FROM event-7 PART A      ----END INITIALISE
@@ -130,7 +137,7 @@ function BeatEngineRollIt(){     if(gBeatEngine){gBeatEngine.rollIt();}  }   // 
 
 function  resetBeatEngine(){   
   if(gBeatEngine){
-    console.log(`reset BE 2`);      
+    console.log(`reset BE 2 ` + gBeatEngine.loopAud);      
     
     if(gBeatEngine.loopAud){
     gBeatEngine.loopAud.pause();    ///***************************************************************
@@ -203,7 +210,17 @@ function audEnded(){
     location.href = 'https://cabinboi.github.io/in-progress/';
   }
 
-
+function openupCB(){
+     // gBeatEngine.animArray.push(new Animator([["BLleftOver02",  "BLACKleftOVERS/", 18]], 12, 0, "ranSwap"));  //  <-- GLITCHER
+    // fade out cover, fade in Bella    
+  console.log("in base openupCB");
+      gBeatEngine.animArray.push(new Animator([["BLleftOver02"]], 9, -.1, "F"));         
+      gBeatEngine.animArray.push(new Animator([["BELLA_NEW"]], 8, .1, "F"));       
+  
+      gDoingOpen = 0;
+      gOpenedUp = 1;    /// check later, can DoingOpen double up?
+      gBeatEngine.playingLoop = 0;   ///  signal to start loop on next play beat
+  }
 
 
 

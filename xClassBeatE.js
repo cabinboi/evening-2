@@ -2,7 +2,7 @@
 class Beatengine {    
   
   ////TEST BACK LOOP
-  playingLoop = 1;  //  0;    ///    ***********************************************************
+  playingLoop = 1;  //  0;   
   loopAud = 0;
   ///
   
@@ -275,8 +275,14 @@ class Beatengine {
  
   set tempo(BPM) {  if (BPM) {
     this.tempo = (60000/BPM)/8;     
+    this.tripletTempo = (60000/BPM)/3;
+    console.log("in BE set tempo  " + this.tempo);
   }      }
-  get tempo() {    return this.tempo;  }
+  
+  get tempo() {    
+    console.log("in BE get tempo  " + this.tempo);
+    return this.tempo;  }
+  
     
   set barsInSect(bars) {     if (bars) {this.barsInSect = bars;}  }
   get barsInSect() {    return this.barsInSect;  } 

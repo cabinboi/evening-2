@@ -49,8 +49,9 @@ class Animator {
       // this anim has ended, but is there sequence to follow, or a callback? // older callbacks
       if(this.sequencer){gBeatEngine.animArray.push( this.sequencer );}
       if(this.callBack){           
-         ///  catch for if right num of params there
-        this.callBack[0](this.callBack[1], this.callBack[2]);                        
+         ///  add catch for if right num of params there
+        this.callBack[0](this.callBack[1], this.callBack[2]);  
+       // this.callBack[0]();
       }          
       return 1;      } } //end this.moveCounter > this.numMoves
     
@@ -80,7 +81,12 @@ class Animator {
         } else {          
           gFile.setFade(this.element, this.pixincs * -1);
         }    
-        break;        
+        break;     
+        
+        case "F":     // one way fader
+           this.element = this.elementArr[0][0]; 
+           gFile.setFade(this.element, this.pixincs);
+        break;
            
       case "width":      //    resize(element, widthHeight, addition=20)
       case "height":            
@@ -95,23 +101,41 @@ class Animator {
           gFile.swapImage(this.elementArr[this.ranCounter][0], randomImg);  
           break;
         
+      case "Y":         //    rotate Y                     
+           this.element = this.elementArr[0][0];   
+        //parse out the integers and add to this.pixincs  //  rotateY(0deg)      
+        var oldStr = document.getElementById(this.element).style.transform;      
+        var oldArr = oldStr.split("(");
+        var oldArr2 = oldArr[1].split("d");
+        var oldInt = parseInt(oldArr2[0]);
+        var newInt = oldInt+this.pixincs;
+        var newStr = String(newInt);
+        var tranString = "rotateY(" + newStr + "deg)" ;                 
+       document.getElementById(this.element).style.transform = tranString;    
+          break;
+        
       default:
     }
               
     
     
-    
+   /* 
     if (this.motion == "T"){gFile.setTop(this.element, this.pixincs); }    //MOVE V        
     
     if (this.motion == "L"){ 
       this.element = this.elementArr[0][0];            
       gFile.setLeft(this.element, this.pixincs);
   //    gFile.move(this.element, "left", this.pixincs)
-    }    //MOVE H
+    }    //MOVE H      */
           
-    
-    if (this.motion == "F"){ gFile.setFade(this.element, this.pixincs);}   ///FADE IN/OUT -- one way fader
-    
+    /*
+    if (this.motion == "F"){    ///FADE IN/OUT -- one way fader
+      this.element = this.elementArr[0][0]; 
+      gFile.setFade(this.element, this.pixincs);
+      console.log("in F element + opac: " + this.element + "  "  + document.getElementById(this.element).style.opacity );
+    }
+    */
+    /*
     if (this.motion == "N"){ let p=0;       } //// DO NOTHING -- new in SHADS
     
     
@@ -144,8 +168,7 @@ class Animator {
           this.fileCounter++;  }          }  
     
     if (this.motion == "Y"){       ////rotateY
-      this.element = this.elementArr[0][0];
-   
+      this.element = this.elementArr[0][0];   
       //parse out the integers and add to this.pixincs  //  rotateY(0deg)      
       var oldStr = document.getElementById(this.element).style.transform;      
       var oldArr = oldStr.split("(");
@@ -153,8 +176,7 @@ class Animator {
       var oldInt = parseInt(oldArr2[0]);
       var newInt = oldInt+this.pixincs;
       var newStr = String(newInt);
-      var tranString = "rotateY(" + newStr + "deg)" ;           
-      
+      var tranString = "rotateY(" + newStr + "deg)" ;                 
      document.getElementById(this.element).style.transform = tranString;            
     }
     
@@ -163,7 +185,7 @@ class Animator {
      document.getElementById(this.element).style.transform = "rotateX(75deg)";          
     }
     
-    
+    */
     
     this.moveCounter++;
     return 0;
@@ -176,7 +198,7 @@ class Animator {
   
   
   
-  ranImageAud(){    
+  ranImageAud(){                                                          ///  sets up what will happen when this image/sound played in BE
      if(this.waitingToPlay){      }  else {                
          this.ranCounter = Math.floor(Math.random() * this.elementArr.length);          
        
@@ -208,12 +230,9 @@ class Animator {
               }
               break;                            
             
-            case this.specialArray[1][2]:    ///  the loud snare sd    ///    for 'openup' rn  //change for for glitch?  ///  ************************************************
-            if(this.brokeoutElsArr.length > 4){     ///   we got the right sound, & enough images over to left
-              if(gOpenedUp == 0){   /// can only do this once
-               gBeatEngine.playingLoop = 0;
-          //     document.getElementById("BLleftOver02").style.opacity = 0;
-             ///  document.getElementById("BELLA_NEW").style.opacity =  "1";  
+            case this.specialArray[1][2]:    ///  the loud snare sd    ///    for 'OPENUP' rn  
+            if(this.brokeoutElsArr.length > 1){     ///   we got the right sound, & enough images over to left  ///  working here, change back to 4 ************************
+              if(gOpenedUp == 0){   /// can only do this once                         
                 gDoingOpen = 1;
               }  else {          ////  MAKE SOME OTHER SOUND,   have done the openup       
                var newfile = this.randAud.replace(this.randAud.substring(this.randAud.length-6, this.randAud.length-4), "00");
@@ -254,11 +273,11 @@ class Animator {
   
   
   
-  
+                                                           ///  does the things fater ran image/sound played in BE
   ranImageAudCB(currElementArr, newImage, thisObj){     // currElementArr now  ["Top1", topPath, topFileNums, {top, left, width, height, opac}, {breakMove}]
      gFile.swapImage(currElementArr[0], newImage);      //  <-- main task of this callback 
              
-         ////////     BREAKOUT    
+         ////////    if it's a BREAKOUT sound
       if(currElementArr[4].breakMove =="breakOut"){        
         const currLeft = gFile.getLoc(currElementArr[0], "left");
         var pixInc = 0;
@@ -300,17 +319,16 @@ class Animator {
           ////  end make big
           
           if(gOpenedUp){ }  else {      ////  make staatic randoms      ////////***********************************************************
-            mover = new Animator([["BLleftOver02",  "BLACKleftOVERS/", 18]], 12, 0, "ranSwap"); 
+            mover = new Animator([["BLleftOver02",  "BLACKleftOVERS/", 18]], 18, 0, "ranSwap");   //  <-- GLITCHER  
             gBeatEngine.animArray.push(mover);
-          }
-          
+          }          
           
         }      else {    ////  already moved over to left     
         }
       }    /// end if breakout
     
     
-          /// BREAKBACK 
+          /// if it's a BREAKBACK sd
       if(thisObj.breakBackArr){      
         document.getElementById(thisObj.breakBackArr[0]).style.zIndex = "2";
         var pixInc = 50;           
@@ -326,7 +344,7 @@ class Animator {
           mover = new Animator([thisObj.breakBackArr], numMoves, pixInc, "height", 0, 0, [thisObj.breakBackCB, thisObj.breakBackArr[0],  thisObj.breakBackArr[3] ]); 
           gBeatEngine.animArray.push(mover);                                                  //  adding a CB ^ to get back to exact old props after breakback                          
         
-        if(gOpenedUp){ }  else {      ////  make glitch randoms      ////////***********************************************************
+        if(gOpenedUp){ }  else {      ////  make glitch randoms      
             mover = new Animator([["BLleftOver02",  "BLACKleftOVERS/", 18]], 12, 0, "ranSwap"); 
             gBeatEngine.animArray.push(mover);
           }        
@@ -335,29 +353,37 @@ class Animator {
       }    /// end if BREAKBACK 
           
     
-    ///   finish the open sequence  ///  get all this back to xBase eventually   ****************************************************************
+    
+    
+    ///   if it's the 'open right side' sd   ///  OPENING
     if(gDoingOpen){
       ////    make left anim squares littler             
-      thisObj.brokeoutElsArr.forEach(item => {                        
-          var mover = new Animator([item], 15, -12, "width"); 
-          gBeatEngine.animArray.push(mover);   
-        
-          var elStyle = window.getComputedStyle(document.getElementById(item[0]));                                                                  
-        
-          if(Number(elStyle.getPropertyValue("left").replace("px", "")) > 150){   
-           // console.log("in doing open thing.left: inside" );
-            var mover = new Animator([item], 20, 10, "left"); 
-            gBeatEngine.animArray.push(mover); 
+      thisObj.brokeoutElsArr.forEach(item => {                                
+          gBeatEngine.animArray.push(new Animator([item], 15, -12, "width"));           
+          var elStyle = window.getComputedStyle(document.getElementById(item[0]));                                    
+          if(Number(elStyle.getPropertyValue("left").replace("px", "")) > 150){                      
+            gBeatEngine.animArray.push(new Animator([item], 20, 10, "left")); 
           }
       }); ///  end littler                  
       
-      document.getElementById("BLleftOver02").style.opacity = "0";
-      document.getElementById("BELLA_NEW").style.opacity =  "1"; 
-      gDoingOpen = 0;
-      gOpenedUp = 1;
+      /// timing: snare sd first [done] / GLITCHER with breakout sds /  then nother snare crack / fade Bella & cover /  will need a CB /    loop last  --  
+      
+          gBeatEngine.animArray.push(new Animator([["BLleftOver02",  "BLACKleftOVERS/", 18]], 18, 0, "ranSwap", 0, 0, [thisObj.openupCB, 0, 0]));  //  <-- GLITCHER
+                                                                  /// AUD AT 8, LIKE: [gFolderBase + "AUDIO/Brushs/", 61 ]
+          var glitchSd = new Audio(gFolderBase + "AUDIO/Brushs/59.ogg" );                         
+          glitchSd.volume= .9;
+          glitchSd.play();
+      
+          var snSd = new Audio(gFolderBase + "AUDIO/Brushs/56.ogg" );                         
+          snSd.volume= .9;
+          snSd.play();
+       
     }    ///   end open sequence                   
 
-
+    
+    
+    
+      ///  MOVE / ROTATE
     var checkLeft = gFile.getLoc(currElementArr[0], "left");
     var rot = 0;
     var moveFade = 0;  
@@ -402,6 +428,20 @@ class Animator {
   
   
   breakBackCB(elementName, elOrigPropsObj)  {  gFile.setElProps(elementName, elOrigPropsObj);  }
+  
+  openupCB(){     
+//      var snSd = new Audio(gFolderBase + "AUDIO/Brushs/56.ogg" );               ///  this one interferes with loopaud          
+  //    snSd.volume= .9;
+    //  snSd.play();
+    
+    // fade out cover, fade in Bella    
+      gBeatEngine.animArray.push(new Animator([["BLleftOver02"]], 9, -.1, "F"));         
+      gBeatEngine.animArray.push(new Animator([["BELLA_NEW"]], 8, .1, "F"));       
+  
+      gDoingOpen = 0;
+      gOpenedUp = 1;    /// check later, can DoingOpen double up?
+      gBeatEngine.playingLoop = 0;   ///  signal to start loop on next play beat      
+  }
     
    
   
