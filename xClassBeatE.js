@@ -106,7 +106,7 @@ class Beatengine {
                     if(this.playingLoop){}     else {
                       this.loopAud = new Audio(gFolderBase + "AUDIO/shuffle_loop.ogg" );
                      // console.log("this.playingLoop     " + this.playingLoop );                 
-                      this.loopAud.volume= .2;
+                      this.loopAud.volume= .1;
                        this.loopAud.loop=true;
                       this.loopAud.play();
                       this.playingLoop = 1;
@@ -193,8 +193,10 @@ class Beatengine {
               break;                      
                 
           case 8:                ////brushes  ANIM's own sounds  MIGHT PUT THIS ON A DIFFERENT BEAT
-                
-                if ( gFile.getRandomNum(10) >4) {           ////WAS 5      then 7       2
+                var freq = 3;
+                if(gOpenedUp){freq = 5; }  else {freq = 1;}
+              //  console.log("in BE brushs freq: " + freq +"  " + gOpenedUp);
+                if ( gFile.getRandomNum(10) >freq) {           ////WAS 5      then 7       2
                   if (this.playSound){                                                /////////// SET UP THE SOUND                                                          
                     this.audArray[this.audCounter].src = this.playSound;
                     this.audArray[this.audCounter].currentTime = 0;

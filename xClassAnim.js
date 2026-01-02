@@ -231,7 +231,7 @@ class Animator {
               break;                            
             
             case this.specialArray[1][2]:    ///  the loud snare sd    ///    for 'OPENUP' rn  
-            if(this.brokeoutElsArr.length > 1){     ///   we got the right sound, & enough images over to left  ///  working here, change back to 4 ************************
+            if(this.brokeoutElsArr.length > 3){     ///   we got the right sound, & enough images over to left  
               if(gOpenedUp == 0){   /// can only do this once                         
                 gDoingOpen = 1;
               }  else {          ////  MAKE SOME OTHER SOUND,   have done the openup       
@@ -318,7 +318,7 @@ class Animator {
             currElementArr[4].breakMove = 0;
           ////  end make big
           
-          if(gOpenedUp){ }  else {      ////  make staatic randoms      ////////***********************************************************
+          if(gOpenedUp){ }  else {      ////  make staatic randoms     
             mover = new Animator([["BLleftOver02",  "BLACKleftOVERS/", 18]], 18, 0, "ranSwap");   //  <-- GLITCHER  
             gBeatEngine.animArray.push(mover);
           }          
@@ -374,9 +374,9 @@ class Animator {
           glitchSd.volume= .9;
           glitchSd.play();
       
-          var snSd = new Audio(gFolderBase + "AUDIO/Brushs/56.ogg" );                         
-          snSd.volume= .9;
-          snSd.play();
+//          var snSd = new Audio(gFolderBase + "AUDIO/Brushs/56.ogg" );                         
+  //        snSd.volume= .9;
+    //      snSd.play();
        
     }    ///   end open sequence                   
 
@@ -418,7 +418,9 @@ class Animator {
     ////  SHUFFLEz
     if(gFile.getRandomNum(50)<20){
       if(thisObj.brokeoutElsArr.length>1){ thisObj.brokeoutElsArr.forEach(item => document.getElementById(item[0]).style.zIndex = String(gFile.getRandomNum(50) + 50) );   }
-    }    
+    }  
+    
+    
     thisObj.waitingToPlay = 0;         
     
   }               ////  end ranImageAudCB
