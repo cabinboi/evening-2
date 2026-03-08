@@ -24,7 +24,7 @@ function tester(...args) {
 
 
 function initialise(){       
-//  tester(6, "hello", [0,1]);
+  console.log("in init **");  
   resetBeatEngine();      ////  still needed here?
   
   gFolderBase = "assets/";     
@@ -52,13 +52,16 @@ function initialise(){
   //gBeatEngine.tempo = 120;
   //console.log("in base tempo  " + gBeatEngine.tempo);
   
- 
+  //var oldStr = document.getElementById("BELLA_NEW").style.transform;  
+  ///console.log(" in initialise oldstr: " +  oldStr);
+  
 }   //CALLED FROM event-7 PART A      ----END INITIALISE
 
 
 
 function playButt(){  
-  if(gStartCounter){    /// if coming in after 'pause' butt, don't want to re-initialise, just carry on, haven't implemented yet  
+  if(gStartCounter){    /// if coming in after 'pause' butt, don't want to re-initialise, just carry on, haven't implemented yet    
+    resetBeatEngine();
     gStartCounter = 0;    ///  ????
     document.getElementById("playText").innerHTML = ">";    
     gMainElementsMatrix.forEach(item => gFile.setElProps(item[0], item[3]));    ////////  RESET ALL ELEMENTS TO ORIG LOCS, OPACS, transY, zIndex -- SRC FILES not held yet              
@@ -66,20 +69,23 @@ function playButt(){
     gDoingOpen = 0;  
     document.getElementById("BELLA_NEW").style.opacity =  "0.1";  
     document.getElementById("BLleftOver02").style.opacity =  "1"; 
-    document.exitFullscreen();     
-    resetBeatEngine();
+    
+    if(document.fullscreenElement){document.exitFullscreen();} else {}
+         
     gwd.actions.timeline.gotoAndPlay('page1', 'pauseStart');  ////this pauses content where it WAS AT FIRST LOAD   
   }else{  
     gStartCounter = 1;                ///    gets here on first start, & restarts, from play butt
     document.getElementById("playText").innerHTML = "| |";  //"■";
-    document.documentElement.requestFullscreen();   
+    
+    if(document.fullscreenElement){} else {document.documentElement.requestFullscreen(); }      
+    
     gwd.actions.timeline.gotoAndPlay('page1', 'Begin');
     
-   var allElsMatrix = structuredClone(gMainElementsMatrix);  /// keeping gMainElementsMatrix clean  
-   var moveOutAudArr = [gFolderBase + "AUDIO/Brushs/58.ogg", gFolderBase + "AUDIO/Brushs/60.ogg"];                        ///// breakout, added the short breakout list here
-   var moveBackAudArr = [gFolderBase + "AUDIO/Brushs/57.ogg", gFolderBase + "AUDIO/Brushs/59.ogg", gFolderBase + "AUDIO/Brushs/56.ogg"];    
-   var ranSwapper = new Animator(allElsMatrix, 2000000, 0, "ranImageAud", [gFolderBase, 8], 0, 0,  [gFolderBase + "AUDIO/Brushs/", 61 ], 0, [moveOutAudArr, moveBackAudArr] );    
-   gBeatEngine.animArray.push(ranSwapper);
+    var allElsMatrix = structuredClone(gMainElementsMatrix);  /// keeping gMainElementsMatrix clean  
+    var moveOutAudArr = [gFolderBase + "AUDIO/Brushs/58.ogg", gFolderBase + "AUDIO/Brushs/60.ogg"];                        ///// breakout, added the short breakout list here
+    var moveBackAudArr = [gFolderBase + "AUDIO/Brushs/57.ogg", gFolderBase + "AUDIO/Brushs/59.ogg", gFolderBase + "AUDIO/Brushs/56.ogg"];    
+    var ranSwapper = new Animator(allElsMatrix, 2000000, 0, "ranImageAud", [gFolderBase, 8], 0, 0,  [gFolderBase + "AUDIO/Brushs/", 61 ], 0, [moveOutAudArr, moveBackAudArr] );    
+    gBeatEngine.animArray.push(ranSwapper);
   }
     
    
@@ -144,9 +150,9 @@ function  resetBeatEngine(){
     gBeatEngine.loopAud.currentTime = 0;
     gBeatEngine.playingLoop = 1;  }
     
-  gBeatEngine.action = 0;  
-  gBeatEngine.playSound = 0;
-  gBeatEngine = 0;   
+    gBeatEngine.action = 0;  
+    gBeatEngine.playSound = 0;
+    gBeatEngine = 0;   
   }                          
                     
   
