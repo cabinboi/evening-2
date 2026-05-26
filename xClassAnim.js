@@ -1,3 +1,4 @@
+///
 
 class Animator {  
   millsecTimer = 40; //ms = 25 frames/sec
@@ -36,7 +37,7 @@ class Animator {
     if (files) {this.fileArray = files;  }
     if (sequence) {this.sequencer = sequence;   }
     if (callBack) {   this.callBack = callBack;   }   
-    if (audList) {    this.audArray = audList;    }
+    if (audList) {    this.audArray = audList;    }    ////  [aud files path, num in folder, volume multiple]
     if (millsecs) {this.millsecTimer = millsecs;}  
     if (specArr) {this.specialArray = specArr;} 
 }     
@@ -102,9 +103,12 @@ class Animator {
           break;
         
       case "Y":         //    rotate Y                     
-           this.element = this.elementArr[0][0];   
-        //parse out the integers and add to this.pixincs  //  rotateY(0deg)      
-        var oldStr = document.getElementById(this.element).style.transform;      
+        this.element = this.elementArr[0][0];   
+        //parse out the integers and add to this.pixincs  //  rotateY(0deg)     
+        var oldStr = document.getElementById(this.element).style.transform;  
+        
+       // var oldStr = window.getComputedStyle(document.getElementById(this.element)).style.transform;
+       // console.log(" in Y oldstr: " +  oldStr);
         var oldArr = oldStr.split("(");
         var oldArr2 = oldArr[1].split("d");
         var oldInt = parseInt(oldArr2[0]);
@@ -217,16 +221,18 @@ class Animator {
          this.currElementArr =  structuredClone(this.elementArr[this.ranCounter]);    ////  arr of arr's like [ ["Top1", topPath, topFileNums, origProps obj], ...]             
        
            //  BREAKOUT
+          let volMultiple = this.audArray[2];
           switch (this.randAud) {           // is this a breakout file?     
             case this.specialArray[0][0]:  /// sd files
             case this.specialArray[0][1]: 
             case this.specialArray[1][0]:    /// sn + chord            
                 if(gFile.getLoc(this.currElementArr[0], "left") < 500){
                ////  MAKE SOME OTHER SOUND,   nothing to breakout             
-               var newfile = this.randAud.replace(this.randAud.substring(this.randAud.length-6, this.randAud.length-4), "01");
+               let newfile = this.randAud.replace(this.randAud.substring(this.randAud.length-6, this.randAud.length-4), "01");
                this.randAud = newfile;
                 }  else {
-              this.currElementArr[4].breakMove = "breakOut"; ////  later, send this element off to the left somewhere           
+              this.currElementArr[4].breakMove = "breakOut"; ////  later, send this element off to the left somewhere    
+              volMultiple = this.audArray[2] + .4;
               }
               break;                            
             
@@ -235,11 +241,11 @@ class Animator {
               if(gOpenedUp == 0){   /// can only do this once                         
                 gDoingOpen = 1;
               }  else {          ////  MAKE SOME OTHER SOUND,   have done the openup       
-               var newfile = this.randAud.replace(this.randAud.substring(this.randAud.length-6, this.randAud.length-4), "00");
+               let newfile = this.randAud.replace(this.randAud.substring(this.randAud.length-6, this.randAud.length-4), "00");
                this.randAud = newfile                 
                }           
             }  else{        ////  MAKE SOME OTHER SOUND,   too early to openup       
-               var newfile = this.randAud.replace(this.randAud.substring(this.randAud.length-6, this.randAud.length-4), "00");
+               let newfile = this.randAud.replace(this.randAud.substring(this.randAud.length-6, this.randAud.length-4), "00");
                this.randAud = newfile
             }
               break;  
@@ -248,7 +254,8 @@ class Animator {
               
             case this.specialArray[1][1]:        /// sn + chord        this is a breakback sound      HAVE TO SHIFT AN ARR OFF THE brokeoutElsArr
               if (this.brokeoutElsArr.length >5) {  
-                this.breakBackArr =  this.brokeoutElsArr.shift();           /// now have 2 arrs in action, the swap one & the breakback one                 
+                this.breakBackArr =  this.brokeoutElsArr.shift();           /// now have 2 arrs in action, the swap one & the breakback one 
+                volMultiple = this.audArray[2] + .4;
               }  else  {           ////  MAKE SOME OTHER SOUND,   nothing to breakback       
                var newfile = this.randAud.replace(this.randAud.substring(this.randAud.length-6, this.randAud.length-4), "00");
                this.randAud = newfile;          
@@ -261,7 +268,7 @@ class Animator {
                  
          
          gBeatEngine.action = [this.ranImageAudCB, this.currElementArr, randomImg, this];              
-         gBeatEngine.playSound = this.randAud ; ///put setter there in Bengine
+         gBeatEngine.playSound = [this.randAud, volMultiple ]; ///  [randaud, vol multiple]    ///put setter there in Bengine
          this.waitingToPlay = 1;
             }   ////    END (oldImage == newImage)  ELSE
        
@@ -319,7 +326,7 @@ class Animator {
           ////  end make big
           
           if(gOpenedUp){ }  else {      ////  make staatic randoms     
-            mover = new Animator([["BLleftOver02",  "BLACKleftOVERS/", 18]], 18, 0, "ranSwap");   //  <-- GLITCHER  
+            mover = new Animator([[gStartCoverEl,  "BLACKleftOVERS/", 18]], 18, 0, "ranSwap");   //  <-- GLITCHER  
             gBeatEngine.animArray.push(mover);
           }          
           
@@ -345,7 +352,7 @@ class Animator {
           gBeatEngine.animArray.push(mover);                                                  //  adding a CB ^ to get back to exact old props after breakback                          
         
         if(gOpenedUp){ }  else {      ////  make glitch randoms      
-            mover = new Animator([["BLleftOver02",  "BLACKleftOVERS/", 18]], 12, 0, "ranSwap"); 
+            mover = new Animator([[gStartCoverEl,  "BLACKleftOVERS/", 18]], 12, 0, "ranSwap"); 
             gBeatEngine.animArray.push(mover);
           }        
         
@@ -368,11 +375,11 @@ class Animator {
       
       /// timing: snare sd first [done] / GLITCHER with breakout sds /  then nother snare crack / fade Bella & cover /  will need a CB /    loop last  --  
       
-          gBeatEngine.animArray.push(new Animator([["BLleftOver02",  "BLACKleftOVERS/", 18]], 18, 0, "ranSwap", 0, 0, [thisObj.openupCB, 0, 0]));  //  <-- GLITCHER
+          gBeatEngine.animArray.push(new Animator([[gStartCoverEl,  "BLACKleftOVERS/", 18]], 18, 0, "ranSwap", 0, 0, [thisObj.openupCB, 0, 0]));  //  <-- GLITCHER
                                                                   /// AUD AT 8, LIKE: [gFolderBase + "AUDIO/Brushs/", 61 ]
-          var glitchSd = new Audio(gFolderBase + "AUDIO/Brushs/59.ogg" );                         
+         /* var glitchSd = new Audio(gFolderBase + "AUDIO/Brushs/59.ogg" );                         
           glitchSd.volume= .9;
-          glitchSd.play();
+          glitchSd.play();  */
       
 //          var snSd = new Audio(gFolderBase + "AUDIO/Brushs/56.ogg" );                         
   //        snSd.volume= .9;
@@ -437,8 +444,12 @@ class Animator {
     //  snSd.play();
     
     // fade out cover, fade in Bella    
-      gBeatEngine.animArray.push(new Animator([["BLleftOver02"]], 9, -.1, "F"));         
-      gBeatEngine.animArray.push(new Animator([["BELLA_NEW"]], 8, .1, "F"));       
+      gBeatEngine.animArray.push(new Animator([[gStartCoverEl]], 9, -.1, "F"));         
+      gBeatEngine.animArray.push(new Animator([[gBackElement_1]], 8, .1, "F"));        
+      
+     // document.getElementById(gBackElement_1).style.transform = "rotateY(-30deg)"; 
+      //gBeatEngine.animArray.push(new Animator([[gBackElement_1]], 6, -5, "Y"));  ///  *******************************      
+      
   
       gDoingOpen = 0;
       gOpenedUp = 1;    /// check later, can DoingOpen double up?

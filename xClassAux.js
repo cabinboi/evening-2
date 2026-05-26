@@ -1,4 +1,4 @@
-
+///
 
 
 class Enviro { 
@@ -144,6 +144,13 @@ getElProps(element, propNamesArr){          ///  top, left, width, height, opac
   }  }        ///////// end getRandomFile
   
   
+  /*
+  getFileCount(folderPath, filePrefix, fileExtension){
+    let aud = new Audio("assets/AUDIO/00.ogg"); 
+    return new Audio("assets/AUDIO/00.ogg".src);   //aud.exists();
+  }
+  */
+  
   
     
   /////                          IMAGES  
@@ -174,7 +181,9 @@ getElProps(element, propNamesArr){          ///  top, left, width, height, opac
     aud.volume = vol;
     return aud;
   }
+  
   setVol (aud, vol) {   aud.volume = vol; }   // sets an audio obj
+  
   stopAudio (audref, playbackPointer){audref.pause(); audref.currentTime = playbackPointer;}   
 
  /////                          NUMBERS  

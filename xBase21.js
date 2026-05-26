@@ -1,99 +1,62 @@
 /// background-color: #0a0a0a;   background-color: #ffffff;
 
-var gFloaters; 
-var gBeatEngine;
-var gFile;
+const gFile = new Xfile();
 
-var gFolderBase;
-var gAudExtension;
-var gImageExtension;
-var gFilePrefix;
-var gCounter;
-var gStartCounter = 0;
+        /// PROJECT SPECIFIC & CARRY THRU GLOBALS & SETTINGS
+const gFolderBase = "assets/";     
+const gAudExtension = ".ogg";
+const gImageExtension = ".png";
+const gFilePrefix = "0";  
 
-var gVolume = 1;
+let gBeatEngine = 0;
+    let gLoopAud =  0;      // for some reason losing hold of it if put inside gBeatEngine object, won't kill at pause time       
+      let gLoopSrc = gFolderBase + "AUDIO/shuffle_loop.ogg";
+      let gLoopVol = .2;
 
-var gMainElementsMatrix = 0;
+let gCounter = 0;
+let gStartCounter = 0;
+let gVolume = 1;
+let gOpenedUp = 0;       /// can we see main Bella yet?
+let gDoingOpen = 0;
 
-var gOpenedUp = 0;       /// can we see main Bella yet?
-var gDoingOpen = 0;
+let gStartCoverEl = "BLleftOver02";
+let gBackElement_1 = "BELLA_NEW";
+let gMainElementsMatrix = 0;
 
-function tester(...args) {
-  args.forEach(item => console.log(item));
-}
+                      ///// for breakout & back of animating little parts, add the short breakout list here. these sds accompany the moves
+let gMoveOutAudArr = [gFolderBase + "AUDIO/Brushs/58.ogg", gFolderBase + "AUDIO/Brushs/60.ogg"];                        
+let gMoveBackAudArr = [gFolderBase + "AUDIO/Brushs/57.ogg", gFolderBase + "AUDIO/Brushs/59.ogg", gFolderBase + "AUDIO/Brushs/56.ogg"];    
 
 
 function initialise(){       
-  console.log("in init **");  
+   
   resetBeatEngine();      ////  still needed here?
   
-  gFolderBase = "assets/";     
-  gAudExtension = ".ogg";
-  gImageExtension = ".png";
-  gFilePrefix = "0";   
-  gCounter = 0;
+  ////////  SETUP FOR BEAT ENGINE
+  const audList = [];
+  audList[0] = gFolderBase + "01" + gAudExtension;         //"AUDIO/Brushs/29" +gAudExtension;      ///"01" + gAudExtension;  // bassy
+  audList[1] = gFolderBase + "02" + gAudExtension;         // snarey
+  audList[2] = gFolderBase + "02" + gAudExtension;         //"AUDIO/Brushs/26" +gAudExtension;  // snarey  //
+  audList[3] = gFolderBase + "02" + gAudExtension;         // snarey   
   
-  gFile=new Xfile();         
-    
-  var audList = [];
-  audList[0] = gFolderBase +  "01" + gAudExtension;         //"AUDIO/Brushs/29" +gAudExtension;      ///"01" + gAudExtension;  // bassy
-  audList[1] = gFolderBase + "02" + gAudExtension;  // snarey
-  audList[2] = gFolderBase +   "02" + gAudExtension;         //"AUDIO/Brushs/26" +gAudExtension;  // snarey  //
-  audList[3] = gFolderBase + "02" + gAudExtension;  // snarey
-                                // (bars/Sect, tSig, BPM, [4 aud srcs], millsecTimer--f/s )  shuffle loop=82 BPM
-  gBeatEngine = new Beatengine([8, true], [4,4], 82, audList, 40); //// 96 was 60  
-  gBeatEngine.action = 0; 
-
-  ///  move to butt trigger?
-  gBeatEngine.startTime = new Date().getTime();
-  gBeatEngine.beatTimeout = setTimeout(BeatEngineRollIt, gBeatEngine.millsecTimer);       
+  let bars = [8, true];  // ([bars/Sect, repeat sect?]
+  let timeSig = [4,4];
+  let BPM = 82;          // loop aud = 82 BPM  
+  let millsecTimer = 40;   // f/sec  
   
-  gMainElementsMatrix = initBella();
-  //gBeatEngine.tempo = 120;
-  //console.log("in base tempo  " + gBeatEngine.tempo);
+  gBeatEngine = new Beatengine(bars, timeSig, BPM, audList, millsecTimer);  
+  gBeatEngine.action = 0;          
+  gBeatEngine.startTime = new Date().getTime();       ///  move to butt trigger?
+  gBeatEngine.beatTimeout = setTimeout(BeatEngineRollIt, gBeatEngine.millsecTimer);  
   
-  //var oldStr = document.getElementById("BELLA_NEW").style.transform;  
-  ///console.log(" in initialise oldstr: " +  oldStr);
+  gMainElementsMatrix = initBella();    
   
 }   //CALLED FROM event-7 PART A      ----END INITIALISE
 
 
 
-function playButt(){  
-  if(gStartCounter){    /// if coming in after 'pause' butt, don't want to re-initialise, just carry on, haven't implemented yet    
-    resetBeatEngine();
-    gStartCounter = 0;    ///  ????
-    document.getElementById("playText").innerHTML = ">";    
-    gMainElementsMatrix.forEach(item => gFile.setElProps(item[0], item[3]));    ////////  RESET ALL ELEMENTS TO ORIG LOCS, OPACS, transY, zIndex -- SRC FILES not held yet              
-    gOpenedUp = 0;       /// can we see main Bella yet?
-    gDoingOpen = 0;  
-    document.getElementById("BELLA_NEW").style.opacity =  "0.1";  
-    document.getElementById("BLleftOver02").style.opacity =  "1"; 
-    
-    if(document.fullscreenElement){document.exitFullscreen();} else {}
-         
-    gwd.actions.timeline.gotoAndPlay('page1', 'pauseStart');  ////this pauses content where it WAS AT FIRST LOAD   
-  }else{  
-    gStartCounter = 1;                ///    gets here on first start, & restarts, from play butt
-    document.getElementById("playText").innerHTML = "| |";  //"■";
-    
-    if(document.fullscreenElement){} else {document.documentElement.requestFullscreen(); }      
-    
-    gwd.actions.timeline.gotoAndPlay('page1', 'Begin');
-    
-    var allElsMatrix = structuredClone(gMainElementsMatrix);  /// keeping gMainElementsMatrix clean  
-    var moveOutAudArr = [gFolderBase + "AUDIO/Brushs/58.ogg", gFolderBase + "AUDIO/Brushs/60.ogg"];                        ///// breakout, added the short breakout list here
-    var moveBackAudArr = [gFolderBase + "AUDIO/Brushs/57.ogg", gFolderBase + "AUDIO/Brushs/59.ogg", gFolderBase + "AUDIO/Brushs/56.ogg"];    
-    var ranSwapper = new Animator(allElsMatrix, 2000000, 0, "ranImageAud", [gFolderBase, 8], 0, 0,  [gFolderBase + "AUDIO/Brushs/", 61 ], 0, [moveOutAudArr, moveBackAudArr] );    
-    gBeatEngine.animArray.push(ranSwapper);
-  }
-    
-   
-}
-
-
 function initBella(){
-  ////////DIVS: Top 1-11, Right 1-10, Left 1-8, Bott 1-7, Door 1-6, Mid 1-6; 
+  ////////DIVS: Top 1-11, Right 1-10, Left 1-8, Bott 1-7, Door 1-6, Mid 1-6;     ALL THE SMALL MOVING PORTIONS OF BACKGROUND IMAGE
   
   var topPath = "BELLA/TOP/";
   var topFileNums = 46;  ////pics in folder
@@ -129,33 +92,80 @@ function initBella(){
     document.getElementById("playTap").style.zIndex = "194";
     document.getElementById("home").style.zIndex = "191";
     document.getElementById("playText").style.zIndex = "192";
-    document.getElementById("BLleftOver02").style.zIndex = "50"; 
-  //  document.getElementById("BLleftOver02").nativeElement.src = gFolderBase +"BLACKleftOVERS/02.png";
+    document.getElementById(gStartCoverEl).style.zIndex = "50"; 
   
-  return swapMatrix;
- 
- 
+  //  document.getElementById(gStartCoverEl).nativeElement.src = gFolderBase +"BLACKleftOVERS/02.png";
+  
+  return swapMatrix; 
  
 }  //----------------------end initBella
+
+
+
+function playButt(){  
+  if(gStartCounter){    /// if coming in after 'pause' butt, don't want to re-initialise, just carry on, haven't implemented yet    
+    resetBeatEngine();
+    gStartCounter = 0;    ///  ????
+    document.getElementById("playText").innerHTML = ">";                        /////    RUDIMENTARY PLAY BUTTON
+    gMainElementsMatrix.forEach(item => gFile.setElProps(item[0], item[3]));    ////////  RESET ALL ELEMENTS TO ORIG LOCS, OPACS, transY, zIndex -- SRC FILES not held yet              
+    gOpenedUp = 0;       /// can we see main Bella yet?
+    gDoingOpen = 0;  
+    document.getElementById(gBackElement_1).style.opacity =  "0.1";  
+    document.getElementById(gStartCoverEl).style.opacity =  "1";     
+    
+    if(document.fullscreenElement){document.exitFullscreen();} else {}
+         
+    gwd.actions.timeline.gotoAndPlay('page1', 'pauseStart');  ////this pauses content where it WAS AT FIRST LOAD   
+  }else{  
+    gStartCounter = 1;                ///    gets here on first start, & restarts, from play butt
+    document.getElementById("playText").innerHTML = "| |";  //"■";
+    
+    
+    document.getElementById("loopAudHolder").volume = gLoopVol;
+    //////////////////////////////////////////
+    gLoopAud = new Audio(gLoopSrc);
+    gLoopAud.volume = gVolume * gLoopVol;
+    gLoopAud.loop=true;
+    
+    if(document.fullscreenElement){} else {document.documentElement.requestFullscreen(); }      
+    
+    gwd.actions.timeline.gotoAndPlay('page1', 'Begin');
+    
+    let allElsMatrix = structuredClone(gMainElementsMatrix);  /// keeping gMainElementsMatrix clean      
+    let ranSwapper = new Animator(allElsMatrix, 2000000, 0, "ranImageAud", [gFolderBase, 8], 0, 0,  [gFolderBase + "AUDIO/Brushs/", 61, .6 ], 0, [gMoveOutAudArr, gMoveBackAudArr] );    
+    gBeatEngine.animArray.push(ranSwapper);                                                ////  ^^ [aud files path, num in folder, volume multiple]
+  }
+    
+   
+}
+
+
+
+function tester(...args) {
+  args.forEach(item => console.log(item));
+}
 
 
 function BeatEngineRollIt(){     if(gBeatEngine){gBeatEngine.rollIt();}  }   // called for timeout 
 
 function  resetBeatEngine(){   
-  if(gBeatEngine){
-    console.log(`reset BE 2 ` + gBeatEngine.loopAud);      
+  if(gBeatEngine){          
     
-    if(gBeatEngine.loopAud){
-    gBeatEngine.loopAud.pause();    ///***************************************************************
-    gBeatEngine.loopAud.currentTime = 0;
-    gBeatEngine.playingLoop = 1;  }
-    
-    gBeatEngine.action = 0;  
-    gBeatEngine.playSound = 0;
-    gBeatEngine = 0;   
-  }                          
-                    
-  
+    if(gLoopAud){
+      ////////////////////////////
+      document.getElementById("loopAudHolder").loop = false;
+      document.getElementById("loopAudHolder").pause();
+      document.getElementById("loopAudHolder").currentTime = 0;
+      /////////////////////////////////////
+      gLoopAud.loop = false;
+      gLoopAud.pause();    
+      gLoopAud.currentTime = 0;
+      gLoopAud = 0;        //// trying stop the phantom sound after pause
+      gBeatEngine.playingLoop = 1;  }   ///   so it doesn't start again before BE quits                   
+      gBeatEngine.action = 0;  
+      gBeatEngine.playSound = 0;
+      gBeatEngine = 0;   
+  }                                              
 } //called  FROM BEGIN BUTTON
 
 
@@ -168,7 +178,7 @@ function resetElSrcs(arrMatrix){
 function addElementOrigProps(arrMatrix){
   if(arrMatrix){   
     arrMatrix.forEach(elArr =>  {      ///  each elArr looks like ["Top1", topPath, topFileNums]  want to add an origProps obj at end, to retrieve at breakback in animator
-       var el = document.getElementById(elArr[0]);
+       var el = document.getElementById(elArr[0]);            
        var elStyle = window.getComputedStyle(el);       
       elArr.push({top:elStyle.getPropertyValue("top"), left:elStyle.getPropertyValue("left"), width:elStyle.getPropertyValue("width"), height:elStyle.getPropertyValue("height"), opacity:elStyle.getPropertyValue("opacity"), transform:"translateY(0px)", zIndex:"2" });  ////  
     } );                         
@@ -217,11 +227,11 @@ function audEnded(){
   }
 
 function openupCB(){
-     // gBeatEngine.animArray.push(new Animator([["BLleftOver02",  "BLACKleftOVERS/", 18]], 12, 0, "ranSwap"));  //  <-- GLITCHER
+     // gBeatEngine.animArray.push(new Animator([[gStartCoverEl,  "BLACKleftOVERS/", 18]], 12, 0, "ranSwap"));  //  <-- GLITCHER
     // fade out cover, fade in Bella    
   console.log("in base openupCB");
-      gBeatEngine.animArray.push(new Animator([["BLleftOver02"]], 9, -.1, "F"));         
-      gBeatEngine.animArray.push(new Animator([["BELLA_NEW"]], 8, .1, "F"));       
+      gBeatEngine.animArray.push(new Animator([[gStartCoverEl]], 9, -.1, "F"));         
+      gBeatEngine.animArray.push(new Animator([[gBackElement_1]], 8, .1, "F"));       
   
       gDoingOpen = 0;
       gOpenedUp = 1;    /// check later, can DoingOpen double up?

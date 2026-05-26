@@ -1,3 +1,4 @@
+///
 
 class Beatengine {    
   
@@ -49,16 +50,8 @@ class Beatengine {
       this.tripletTempo = (60000/BPM)/3;
     } 
     if (audfiles) {
-      this.audArray[0] = new Audio(audfiles[0]);   ///test bass drum
-     // this.audArray[0].volume= gVolume * 0.4;
-   //   this.audArray[1] = new Audio(audfiles[1]);    ///test Marim2s
-   //   this.audArray[1].volume= gVolume * 0.2;
-      
-      this.audArray[1] = new Audio(audfiles[1]);      ///test snare   
-     // this.audArray[2] = new Audio(gFolderBase + "AUDIO/Brushs/26" +gAudExtension);
-     // this.audArray[2].src = gFolderBase + "AUDIO/Brushs/26" +gAudExtension;
-   //   this.audArray[2].volume= gVolume * 0.9;
-      
+      this.audArray[0] = new Audio(audfiles[0]);   ///test bass drum      
+      this.audArray[1] = new Audio(audfiles[1]);      ///test snare         
       this.audArray[2] = new Audio(audfiles[3]);    //// rest are brushes
       //adding more channels to stop conflicts 
       this.audArray[3] = new Audio(audfiles[3]);
@@ -68,6 +61,7 @@ class Beatengine {
     }   
     if (millsecs) {this.millsecTimer = millsecs;  }  
   }   
+  
   
    rollIt (){  //coming thru every 40 ms          
    this.rightTime = this.startTime + this.tempo; 
@@ -98,159 +92,66 @@ class Beatengine {
      this.isSameImg = 0;   
      
      
-            switch (this.count32s) {     
-             case 1:               /// ON BEAT  
-                    
-                
-                  ///////////  TEST THE BACKGROUND LOOP   
-                    if(this.playingLoop){}     else {
-                      this.loopAud = new Audio(gFolderBase + "AUDIO/shuffle_loop.ogg" );
-                     // console.log("this.playingLoop     " + this.playingLoop );                 
-                      this.loopAud.volume= .1;
-                       this.loopAud.loop=true;
-                      this.loopAud.play();
-                      this.playingLoop = 1;
-                     // console.log("this.playingLoop     " + this.playingLoop );
-                    }
-                    
-                
-                
-                
-                ////test how to trigger an 8th note triplet from here
-                //// and not play case 8 while triplet on
-                
-                if (this.playSound){                              
-                  
-                switch (this.beatCount) {
-                     case 1:                                                    
-               //     this.audArray[0].currentTime = 0;       /////  BASS DRUM
-                //    this.audArray[0].volume= gVolume * 0.2;
-                //    this.currentAud = this.audArray[0]
-                   // if (this.action){ this.currentAction = this.action; }  ////    ::::  these are animations tied to the timing beats   BREAKOUT WORK
-                    break;
-                    
-                    case 2:      
-                   /* this.audArray[1].currentTime = 0;          /////  SNARE  DRUM
-                    this.audArray[1].volume= gVolume * 0.6;                   
-                    this.currentAud = this.audArray[1]
-                    if (this.action){ this.currentAction = this.action; }  ////    ::::  these are animations tied to the timing beats */
-                    break;
-                    
-                     case 3:                                                        
-               /*     this.audArray[0].currentTime = 0;       /////  BASS DRUM
-                    this.audArray[0].volume= gVolume * 0.2;
-                    this.currentAud = this.audArray[0]  */
-                //    if (this.action){ this.currentAction = this.action; }  ////    ::::  these are animations tied to the timing beats  BREAKOUT WORK
-                    break;
-                    
-                    case 4:            
-              /*      this.audArray[1].currentTime = 0;             /////  SNARE  DRUM
-                    this.audArray[1].volume= gVolume * 0.6;                   
-                    this.currentAud = this.audArray[1]  */
-                 //   if (this.action){ this.currentAction = this.action; }  ////    ::::  these are animations tied to the timing beats  BREAKOUT WORK
-                    break;                                       
-                    
-                  default:                                         
-                                       
-                    }   /// switch (this.beatCount)                                                                 
-                }      ////if playsound
-                
-                  
-              //   if (this.action){ this.currentAction = this.action; }  ////    ::::  these are animations tied to the timing beats           BREAKOUT WORK           
-              break;  
-                
-                
-                
-          case 2:                                  
-              break;        
-                
-          case 3:                                 
-              break;        
-                          
-          case 4:                         
-              break;
-                        
-          case 5:          /// OFF BEAT  1 r *& r                                   
-                /////////// testing          HAPPENING INDEPENDENT OF THE ANIMATIONS & THEIR TIED BEATS                
-            /*    if (this.playSound){                                         
-                 if (this.aud1ended){                                                       
-                    if(this.beatCount == 1){   
-                      if(gFile.getRandomNum(20)<3){
-                        this.randAud = gFile.getRandomFile(gFolderBase + "AUDIO/MARIM 2s/", 11,  gFilePrefix, gAudExtension );  
-                        this.audArray[1].src = this.randAud;
-                        this.audArray[1].currentTime = 0;                         
-                        this.aud1ended = 0;                   /////make a setter for this                                     
-                        this.audArray[1].play();
-                        this.audArray[1].onended = audEnded;                                             
-                  }     }      }   }      */
-                
-                break;  
-                              
-          case 6:                         
-              break;
-                
-          case 7:                               
-              break;                      
-                
-          case 8:                ////brushes  ANIM's own sounds  MIGHT PUT THIS ON A DIFFERENT BEAT
-                var freq = 3;
-                if(gOpenedUp){freq = 5; }  else {freq = 1;}
-              //  console.log("in BE brushs freq: " + freq +"  " + gOpenedUp);
-                if ( gFile.getRandomNum(10) >freq) {           ////WAS 5      then 7       2
-                  if (this.playSound){                                                /////////// SET UP THE SOUND                                                          
-                    this.audArray[this.audCounter].src = this.playSound;
-                    this.audArray[this.audCounter].currentTime = 0;
-                    this.audArray[this.audCounter].volume= gVolume * .8;
-                    this.currentAud = this.audArray[this.audCounter];  
-                    this.currentAud.play();    
-             //    console.log("BE this.audArray[this.audCounter].src= "  + this.audArray[this.audCounter].src);
-                    this.audCounter++;  
-                    if(this.audCounter>6){this.audCounter=2;}//reset counter, random instrument files played in audios 2-5
-                    
-                    if (this.action){   this.currentAction = this.action; }  ////    ::::  these are animations tied to the timing beats  JUST MOVED THIS
-                    
-                    
-                    /*
-                    if ( gFile.getRandomNum(10) <2) {          //play other instrument
-                      this.randAud = gFile.getRandomFile(this.playSound[4], this.playSound[5], this.playSound[2], this.playSound[3] );   
-                      this.audArray[this.audCounter].src = this.randAud;
-                      this.audArray[this.audCounter].currentTime = 0;
-                      this.audArray[this.audCounter].volume= gVolume * 0.3;
-                      this.currAuxAud = this.audArray[this.audCounter];                    
-                      this.audCounter++;  
-                      if(this.audCounter>6){this.audCounter=2;}//reset counter, random instrument files played in audios 2-5
-                    }
-                    */
-                    
-                    
-                  }                               
-                }                            
-              break; 
+     ///////////  BACKGROUND LOOP  
+     if(this.count32s==1){      ///  carry thru as which32ndForLoop     
+        if(this.playingLoop){}     else {  
+          if(this.beatCount == 1) {     ///  carry thru as whichBeatCountForLoop
+          //document.getElementById("loopAudHolder").play();
+          gLoopAud.play();
+          this.playingLoop = 1;   }           }   
+           }
      
-               default:  
+       //////////  ANIM SD  (brushes)
+              ///  TO DO  lower freq before opened  up, higher freq after open    ///  need to trigger the action a beat later that this sound
+      if(this.count32s==8){     ///  carry thru as which32ndForAnimSd 
+        let oktoPlay =  0;    ////brushes  ANIM's own sounds  MIGHT PUT THIS ON A DIFFERENT BEAT
                 
-           } ///switch (this.count32s)                            
-                          
-             this.count32s++;             
-             if (this.count32s > 8) {   this.count32s=1;   this.beatCount++;      }                   
-             if (this.beatCount > this.timeSig[0]) {  this.beatCount = 1;   this.barCount++;  }          
-             if (this.barCount > this.barsInSect) {
-               this.barCount = 1; if(! this.repeatSection){ clearTimeout(this.beatTimeout)  }  
-               // reached end of a section, might need to clean the anim list
-               this.cleanAnimList();
-                                   }    //if (this.barCount >                                        
+        if (this.playSound){            ////   there is something to play  
+            let freq = 3;                    
+
+            if(gOpenedUp){    ///only want brushes if beatcount == 2                     
+              if(this.beatCount == 2) {   oktoPlay =  1;     freq = 1;    }             ///  carry thru as whichBeatCountForAnimSd  / whatFreq              
+              if(this.beatCount == 3) {   oktoPlay =  1;     freq = 1;    }
+              } else {  oktoPlay =  1;   freq = 3;      }         ///  not openedup, brushes on any beatcount          
+
+          if(oktoPlay){
+            if ( gFile.getRandomNum(10) >freq) {           ////WAS 5      then 7       2
+                              /////////// SET UP THE SOUND                                                          
+                this.audArray[this.audCounter].src = this.playSound[0];
+                this.audArray[this.audCounter].currentTime = 0;
+                this.audArray[this.audCounter].volume= gVolume *  this.playSound[1];          ///  whatVol
+                this.currentAud = this.audArray[this.audCounter];  
+                this.currentAud.play();                   
+                this.audCounter++;  
+                if(this.audCounter>6){this.audCounter=2;}  //reset counter, random instrument files played in audios 2-5
+
+                if (this.action){   this.currentAction = this.action; }  ////    ::::  these are animations tied to the timing beats  JUST MOVED THIS
+            }  ///   if ( gFile.getRandomNum(10) >freq)
+            }   ///  if oktoplay
+            }   /// if this.playsound
+            }  ///   if(this.count32s==8)
+     
+                                
+     //////    TIDY UP                     
+     this.count32s++;             
+     if (this.count32s > 8) {   this.count32s=1;   this.beatCount++;      }                   
+     if (this.beatCount > this.timeSig[0]) {  this.beatCount = 1;   this.barCount++;  }          
+     if (this.barCount > this.barsInSect) {
+       this.barCount = 1; if(! this.repeatSection){ clearTimeout(this.beatTimeout)  }  
+       // reached end of a section, might need to clean the anim list
+       this.cleanAnimList();
+                           }    //if (this.barCount >                                        
       
-     
+     /////    DO ANIM ACTION
      if (this.action){   if (this.currentAction) {    ////    ::::  these are animation literals tied to the timing beats
         //  this gets triggered by the random in case 8, brushes above
           this.isSameImg = this.currentAction[0] (this.currentAction[1], this.currentAction[2], this.currentAction[3]); // method literal   ... issameimg set in anim now, not needed now                  
      }               
        
      }             
+               
      
- // if (this.currAuxAud) { this.currAuxAud.play();   }            
-     
-     // check for something to animate   ::::  these are constant running animations   
+     //// check for something else to animate   ::::  these are constant running animations   / legacy, or overlays etc
      let anim = 0;
     for (var x = 0; x < this.animArray.length; x++){      
       if(this.animArray[x]){
@@ -301,5 +202,104 @@ class Beatengine {
 
 
 
+           // this.audArray[0].volume= gVolume * 0.4;
+   //   this.audArray[1] = new Audio(audfiles[1]);    ///test Marim2s
+   //   this.audArray[1].volume= gVolume * 0.2;
+     // this.audArray[2] = new Audio(gFolderBase + "AUDIO/Brushs/26" +gAudExtension);
+     // this.audArray[2].src = gFolderBase + "AUDIO/Brushs/26" +gAudExtension;
+   //   this.audArray[2].volume= gVolume * 0.9;
 
 
+                      
+                                 // this.audArray[0].volume= gVolume * 0.4;
+   //   this.audArray[1] = new Audio(audfiles[1]);    ///test Marim2s
+   //   this.audArray[1].volume= gVolume * 0.2;
+     // this.audArray[2] = new Audio(gFolderBase + "AUDIO/Brushs/26" +gAudExtension);
+     // this.audArray[2].src = gFolderBase + "AUDIO/Brushs/26" +gAudExtension;
+   //   this.audArray[2].volume= gVolume * 0.9;
+                      /*
+                     // console.log("this.playingLoop     " + this.playingLoop );                 
+                      this.loopAud.volume= .2;
+                      this.loopAud.loop=true;
+                      this.loopAud.play();
+                      this.playingLoop = 1;
+                      */
+                     // console.log("this.playingLoop     " + this.playingLoop );
+
+
+
+
+     
+     
+     /*
+            switch (this.count32s) {     
+             case 1:               /// ON BEAT  
+                    
+                
+                  ///////////  BACKGROUND LOOP   
+                    if(this.playingLoop){}     else {  
+                      if(this.beatCount == 1) {
+                      //////////////////////////////
+                      //document.getElementById("loopAudHolder").play();
+                      gLoopAud.play();
+                      this.playingLoop = 1;   }           }                                                                       
+              break;  
+                
+                
+                
+            case 2:                                  
+                break;        
+
+            case 3:                                 
+                break;        
+
+            case 4:                         
+                break;
+
+            case 5:          /// OFF BEAT  1 r *& r                                                                       
+
+                  break;  
+
+            case 6:                         
+                break;
+
+            case 7:                               
+                break;                      
+
+            case 8:                               
+                                  
+                let oktoPlay =  0;    ////brushes  ANIM's own sounds  MIGHT PUT THIS ON A DIFFERENT BEAT
+                
+                if (this.playSound){            ////   there is something to play  
+                    let freq = 3;                    
+                    
+                    if(gOpenedUp){    ///only want brushes if beatcount == 2                     
+                      if(this.beatCount == 2) {   oktoPlay =  1;     freq = 5;    }                                       
+                      } else {  oktoPlay =  1;   freq = 1;      }         ///  not openedup, brushes on any beatcount
+                      
+                      
+                     ///  lower freq before opened  up, higher freq after open    ///  need to trigger the action a beat later that this sound
+                 
+                  
+                  if(oktoPlay){
+                    if ( gFile.getRandomNum(10) >freq) {           ////WAS 5      then 7       2
+                                      /////////// SET UP THE SOUND                                                          
+                        this.audArray[this.audCounter].src = this.playSound;
+                        this.audArray[this.audCounter].currentTime = 0;
+                        this.audArray[this.audCounter].volume= gVolume * .7;
+                        this.currentAud = this.audArray[this.audCounter];  
+                        this.currentAud.play();                   
+                        this.audCounter++;  
+                        if(this.audCounter>6){this.audCounter=2;}//reset counter, random instrument files played in audios 2-5
+
+                        if (this.action){   this.currentAction = this.action; }  ////    ::::  these are animations tied to the timing beats  JUST MOVED THIS
+                    }  ///   if ( gFile.getRandomNum(10) >freq)
+
+                    }   ///  if oktoplay
+                  }         /// if this.playsound
+                break; 
+
+                 default:                  
+           } ///switch (this.count32s)    */       
+
+ // if (this.currAuxAud) { this.currAuxAud.play();   }  
