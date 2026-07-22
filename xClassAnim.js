@@ -500,7 +500,7 @@ class Animator {
           } ////  end make big                                        
           
           if(gOpenedUp){ }  else {      ////  make static randoms     
-           let mover = new Animator([[gRightCover,  "BLACKleftOVERS/", 18]], 18, 0, "ranSwap");   //  <-- GLITCHER  will need a glitch CB, so ends on opaque one
+           let mover = new Animator([[gRightCover,  "BLACKleftOVERS/", 23]], 18, 0, "ranSwap");   //  <-- GLITCHER  will need a glitch CB, so ends on opaque one
             gBeatEngine.animArray.push(mover);
           }          
           
@@ -535,7 +535,7 @@ class Animator {
         
         
         if(gOpenedUp){ }  else {      ////  make glitch randoms      
-            mover = new Animator([[gRightCover,  "BLACKleftOVERS/", 18]], 12, 0, "ranSwap");   //  <-- GLITCHER   will need a glitch CB, so ends on opaque one
+            mover = new Animator([[gRightCover,  "BLACKleftOVERS/", 23]], 12, 0, "ranSwap");   //  <-- GLITCHER   will need a glitch CB, so ends on opaque one
             gBeatEngine.animArray.push(mover);
           }        
         
@@ -557,7 +557,7 @@ class Animator {
       }); ///  end littler                         
       
       /// timing: snare sd first [done] / GLITCHER with breakout sds /  then nother snare crack / fade Bella & cover /  will need a CB /    loop last  --        
-          gBeatEngine.animArray.push(new Animator([[gRightCover,  "BLACKleftOVERS/", 18]], 18, 0, "ranSwap", 0, 0, [thisObj.openupCB, 0, 0]));  //  <-- GLITCHER
+          gBeatEngine.animArray.push(new Animator([[gRightCover,  "BLACKleftOVERS/", 23]], 18, 0, "ranSwap", 0, 0, [thisObj.openupCB, 0, 0]));  //  <-- GLITCHER
                                                                   /// AUD AT 8, LIKE: [gFolderBase + "AUDIO/Brushs/", 61 ]           
           
           document.getElementById(gGridFloat).style.width = "570px";
@@ -611,7 +611,9 @@ class Animator {
     
     ////  SHUFFLEz
     if(gFile.getRandomNum(50)<20){
-      if(thisObj.brokeoutElsArr.length>1){ thisObj.brokeoutElsArr.forEach(item => document.getElementById(item[0]).style.zIndex = String(gFile.getRandomNum(50) + 60) );   }
+      if(thisObj.brokeoutElsArr.length>1){ 
+        thisObj.brokeoutElsArr.forEach(item => document.getElementById(item[0]).style.zIndex = String(gFile.getRandomNum(50) + 60) );  
+      }
     }    //// end  SHUFFLEz
     
     
